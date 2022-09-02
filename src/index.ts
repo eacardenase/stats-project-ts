@@ -3,14 +3,15 @@ import MatchReader from './MatchReader';
 import Summary from './Summary';
 import WinsAnalysis from './analyzers/WinsAnalysis';
 import ConsoleReport from './reporters/ConsoleReport';
+import HtmlReport from './reporters/HtmlReport';
 
 const csvFileReader = new CsvFileReader('football.csv');
 
 const matchReader = new MatchReader(csvFileReader);
 matchReader.load();
 
-const winsAnalysis = new WinsAnalysis('Man United');
-const consoleReporter = new ConsoleReport();
+const winsAnalysis = new WinsAnalysis('Bournemouth');
+const htmlReport = new HtmlReport();
 
-const matchesSummary = new Summary(winsAnalysis, consoleReporter);
+const matchesSummary = new Summary(winsAnalysis, htmlReport);
 matchesSummary.buildAndPrint(matchReader.matches);
