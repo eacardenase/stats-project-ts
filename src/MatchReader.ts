@@ -1,29 +1,41 @@
-import CsvFileReader from './CsvFileReader';
-import { MatchResult } from './MatchResult';
 import { dateStringToDate } from './utils';
+
+import { MatchResult } from './MatchResult';
+
+interface DataReader {
+    read(): void;
+    data: string[][];
+}
 
 type MatchData = [Date, string, string, number, number, MatchResult, string];
 
-export default class MatchReader extends CsvFileReader<MatchData> {
-    public mapRow(row: string[]): MatchData {
-        const [
-            matchDate,
-            homeTeam,
-            awayTeam,
-            homePoints,
-            awayPoints,
-            winner,
-            arbiter,
-        ] = row;
+export default class MatchReader {
+    public matches: MatchData[] = [];
 
-        return [
-            dateStringToDate(matchDate),
-            homeTeam,
-            awayTeam,
-            +homePoints,
-            +awayPoints,
-            winner as MatchResult, // type assertion
-            arbiter,
-        ];
+    constructor(public reader: DataReader) {}
+
+    public load(): void {
+        this.reader.read();
+        this.matches = this.reader.data.map((row: string[]): MatchData => {
+            const [
+                matchDate,
+                homeTeam,
+                awayTeam,
+                homePoints,
+                awayPoints,
+                winner,
+                arbiter,
+            ] = row;
+
+            return [
+                dateStringToDate(matchDate),
+                homeTeam,
+                awayTeam,
+                +homePoints,
+                +awayPoints,
+                winner as MatchResult, // type assertion
+                arbiter,
+            ];
+        });
     }
 }
